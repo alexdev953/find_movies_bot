@@ -1,0 +1,9 @@
+bot_token = 'TOKEN_FROM_BOTFATHER'
+
+HEADERS = {
+    "user-agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36",
+    "accept-language":
+        "uk,ru-RU;q=0.9,ru;q=0.8,en-US;q=0.7,en;q=0.6"
+}

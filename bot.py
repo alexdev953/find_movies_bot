@@ -18,10 +18,20 @@ async def take_start(message):
 
 @dp.message_handler(text_startswith=[url_for_search])
 async def echo(message: types.Message):
-    answer = '\n' + json.dumps(FindMovies().find_movies(url=message.text), indent=2)
+    answer = FindMovies().find_movies(url=message.text)
     print(answer)
-    print(len(answer))
-    await message.answer(answer)
+    # print(len(answer))
+    inline_declar = types.InlineKeyboardMarkup(row_width=5)
+    inline_key = []
+    for title in answer['quality'].keys():
+        for href in answer['quality'][title]['mp4']:
+            inline_key.append((title, href))
+            # inline_declar.add(types.InlineKeyboardButton)
+
+    declar_keys = (types.InlineKeyboardButton(title, url=href) for title, href in tuple(inline_key))
+    inline_declar.add(*declar_keys)
+    poster_url = answer['poster']
+    await message.answer_photo(photo=poster_url, reply_markup=inline_declar)
 
 
 if __name__ == '__main__':

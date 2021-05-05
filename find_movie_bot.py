@@ -59,7 +59,6 @@ class FindMovies:
             if val['data-token']:
                 quality = self.get_players_script(f'https://voidboost.net/movie/{val["data-token"]}/iframe?h=baskino.me')
                 translate_list.append({'name': val.text, 'quality': quality['quality']})
-        print(translate_list)
         return translate_list
 
     def parse_script(self, script) -> dict:

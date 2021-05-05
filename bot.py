@@ -1,7 +1,7 @@
 from aiogram import Bot, Dispatcher, executor, types
 from config import bot_token
 from find_movie_bot import FindMovies
-import json
+from bot_utils import make_inline_keyboard
 # Initialize bot and dispatcher
 bot = Bot(token=bot_token, parse_mode=types.ParseMode.HTML)
 dp = Dispatcher(bot)
@@ -19,17 +19,10 @@ async def take_start(message):
 @dp.message_handler(text_startswith=[url_for_search])
 async def echo(message: types.Message):
     answer = FindMovies().find_movies(url=message.text)
-    print(answer)
     poster_url = answer['poster']
     await message.answer_photo(photo=poster_url)
-    for watch in answer['watch']:
-        inline_declar = types.InlineKeyboardMarkup(row_width=5)
-        inline_key = []
-        for title in watch['quality'].keys():
-            inline_key.append((title, watch['quality'][title]['mp4']))
-        declar_keys = (types.InlineKeyboardButton(title, url=href) for title, href in tuple(inline_key))
-        inline_declar.add(*declar_keys)
-        await message.answer(watch['name'], reply_markup=inline_declar)
+    for name, inline_keyboard in make_inline_keyboard(answer):
+        await message.answer(name, reply_markup=inline_keyboard)
 
 
 if __name__ == '__main__':

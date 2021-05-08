@@ -11,3 +11,7 @@ def make_inline_keyboard(data):
         declar_keys = (types.InlineKeyboardButton(title, url=href) for title, href in tuple(inline_key))
         object_col.append((watch['name'], inline_declar.add(*declar_keys)))
     return object_col
+
+
+markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+markup.add('Показати новинки')

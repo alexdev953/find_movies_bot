@@ -57,7 +57,8 @@ class FindMovies:
         find_translate = soup.find("select", {"id": "translator-name"}).find_all('option')
         for val in find_translate:
             if val['data-token']:
-                quality = self.get_players_script(f'https://voidboost.net/movie/{val["data-token"]}/iframe?h=baskino.me')
+                quality = self.get_players_script(
+                    f'https://voidboost.net/movie/{val["data-token"]}/iframe?h=baskino.me')
                 translate_list.append({'name': val.text, 'quality': quality['quality']})
         return translate_list
 
@@ -111,3 +112,23 @@ class FindMovies:
                         quality_dict['quality']['1080p']['m3u8'] = extens[0]
                         quality_dict['quality']['1080p']['mp4'] = extens[1]
         return quality_dict
+
+    def find_newest(self):
+        newest_list = []
+        url = 'http://baskino.me'
+        response = requests.get(url, headers=HEADERS)
+        soup = BeautifulSoup(response.text, "html.parser")
+        find_newest = soup.find('div', class_='carousel-box').find_all('a')
+        for val in find_newest:
+            if not val['href'].startswith('#'):
+                newest_list.append({'id_film': self.make_films_id(val['href']),
+                                    'name': val.find('img')['title'],
+                                    'url': f"{url}{val['href']}",
+                                    'poster': val.find('img')['src']})
+        # print(newest_list)
+        return newest_list
+
+    def make_films_id(self, href):
+        id_film = href.split('/')[3].split('-')[0]
+        # print(id_film)
+        return id_film

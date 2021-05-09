@@ -78,9 +78,9 @@ async def check_city(message: types.Message, state: FSMContext):
 async def take_text(message: types.Message):
     DbFunc().check_user(message)
     if message.text.startswith('/'):
-        await message.reply('Перевірьте чи правильно введена команда')
+        await message.reply('Перевірьте чи правильно введена команда', reply_markup=markup)
     else:
-        await message.reply('Нажаль я ще не все вмію')
+        await message.reply('Нажаль я ще не все вмію', reply_markup=markup)
 
 
 @dp.callback_query_handler(text_startswith=['f_id'])
@@ -101,6 +101,20 @@ async def state_cancel(query: types.CallbackQuery, state: FSMContext):
     await query.answer("Охрана отмєна 😎")
     await bot.edit_message_reply_markup(query.from_user.id, query.message.message_id)
 
+
+@dp.errors_handler()
+async def send_admin(update, error):
+    """
+    Take error in bot and send to admin
+    """
+    if not isinstance(error, TimeoutError):
+        print(update, error)
+        list_admin = [379210271]
+        name_error = f'{error}'.replace('<', '').replace('>', '')
+        message_to_admin = f"""Сталася помилка в боті:\n{name_error}\nПри запиті:\n{update}"""
+        for user in list_admin:
+            await bot.send_message(user, message_to_admin)
+        await update.message.answer('Сталася загальна помилка')
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)

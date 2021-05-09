@@ -8,8 +8,9 @@ def make_inline_keyboard(data):
         inline_key = []
         for title in watch['quality'].keys():
             mp4_file = watch['quality'][title]['mp4']
-            if mp4_file:
-                inline_key.append((title, mp4_file))
+            # if mp4_file:
+            #     inline_key.append((title, mp4_file))
+            inline_key.append((title, mp4_file))
         declar_keys = (types.InlineKeyboardButton(title, url=href) for title, href in tuple(inline_key))
         object_col.append((watch['name'], inline_declar.add(*declar_keys)))
     return object_col

@@ -3,7 +3,7 @@ import requests
 import re
 import logging
 from config import HEADERS
-
+from db_func import DbFunc
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('Find_movie_bot')
 
@@ -125,7 +125,7 @@ class FindMovies:
                                     'name': val.find('img')['title'],
                                     'url': f"{url}{val['href']}",
                                     'poster': val.find('img')['src']})
-        # print(newest_list)
+        DbFunc().insert_movies(newest_list)
         return newest_list
 
     def make_films_id(self, href, search=False):
@@ -146,9 +146,10 @@ class FindMovies:
         # print(films)
         if films:
             for val in films:
-                if val.find('a')['href'].startswith('http://baskino.me/films/'):
-                    films_list.append({'id_film': self.make_films_id(val.find('a')['href'], search=True) ,
+                if val.find('a')['href'].startswith(f'{url}films/'):
+                    films_list.append({'id_film': self.make_films_id(val.find('a')['href'], search=True),
                                        'name': val.find('img')['title'],
                                        'url': val.find('a')['href'],
                                        'poster': val.find('img')['src']})
+        DbFunc().insert_movies(films_list)
         return films_list

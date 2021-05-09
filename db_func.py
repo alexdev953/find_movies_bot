@@ -26,16 +26,18 @@ class DbFunc:
             self.cur.execute(f"update users set last_uses = datetime('now', 'localtime') where userid = {user_cred.id};")
             self.conn.commit()
             self.conn.close()
+        return True
 
     def insert_movies(self, data):
-        for val in data:
-            films_id = val['id_film']
-            name = val['name']
-            url = val['url']
-            poster_url = val['poster']
-            self.cur.execute(f"insert into films (films_id, name, url, poster_url) values ({films_id}, '{name}', '{url}', '{poster_url}')")
-            self.conn.commit()
-        self.conn.close()
+        if data:
+            for val in data:
+                films_id = val['id_film']
+                name = val['name']
+                url = val['url']
+                poster_url = val['poster']
+                self.cur.execute(f"insert into films (films_id, name, url, poster_url) values ({films_id}, '{name}', '{url}', '{poster_url}')")
+                self.conn.commit()
+            self.conn.close()
 
     def search_film_id(self, id_film):
         self.cur.execute(f'select url from films where films_id = {id_film}')

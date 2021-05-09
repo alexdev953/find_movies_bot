@@ -60,18 +60,19 @@ async def search_state(message: types.Message):
 
 @dp.message_handler(state=NextStep.waiting_for_movies_name, content_types=types.ContentTypes.TEXT)
 async def check_city(message: types.Message, state: FSMContext):
-    await state.finish()
     DbFunc().check_user(message)
     search_text = message.text
     answer_msg = FindMovies().search_films(search_text)
     if answer_msg:
+        await state.finish()
         DbFunc().insert_movies(answer_msg)
         for text in answer_msg[:10]:
             inline_declar = types.InlineKeyboardMarkup()
             inline_declar.add(types.InlineKeyboardButton('🎬 Дивитися', callback_data=f"f_id@{text['id_film']}"))
             await message.answer_photo(text['poster'], f"<b>{text['name']}</b>", reply_markup=inline_declar)
     else:
-        await message.answer('Нічого не знайдено')
+        await message.answer('Нічого не знайдено\nВведіть назву ще раз', reply_markup=keyboard_inline_state)
+
 
 
 @dp.message_handler(content_types=['text'])
@@ -99,7 +100,8 @@ async def take_callback(query: types.CallbackQuery):
 async def state_cancel(query: types.CallbackQuery, state: FSMContext):
     await state.finish()
     await query.answer("Охрана отмєна 😎")
-    await bot.edit_message_reply_markup(query.from_user.id, query.message.message_id)
+    await query.message.edit_text('Пошук скасовано')
+
 
 
 @dp.errors_handler()

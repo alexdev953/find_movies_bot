@@ -15,3 +15,4 @@ def make_inline_keyboard(data):
 
 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 markup.add('🎥 Показати новинки Топ-10')
+markup.add('🔎 Пошук')

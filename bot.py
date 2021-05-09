@@ -83,8 +83,7 @@ async def take_text(message: types.Message):
         await message.reply('Нажаль я ще не все вмію', reply_markup=markup)
 
 
-@dp.callback_query_handler(lambda query: DbFunc().check_user(query.message),
-                           text_startswith=['f_id'])
+@dp.callback_query_handler(text_startswith=['f_id'])
 async def take_callback(query: types.CallbackQuery):
     await bot.answer_callback_query(query.id, '🔭 Шукаю фільм')
     answer_data = query.data
@@ -96,8 +95,7 @@ async def take_callback(query: types.CallbackQuery):
         await query.message.answer(f'🎙 {name}', reply_markup=inline_keyboard)
 
 
-@dp.callback_query_handler(lambda query: DbFunc().check_user(query.message),
-                           text_startswith='state_cancel', state='*')
+@dp.callback_query_handler(text_startswith='state_cancel', state='*')
 async def state_cancel(query: types.CallbackQuery, state: FSMContext):
     await state.finish()
     await query.answer("Охрана отмєна 😎")

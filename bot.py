@@ -19,6 +19,21 @@ async def take_start(message: types.Message):
         f"Привіт, {message.from_user.first_name}!\nЯ - <b>{about_bot['first_name']}</b>", reply_markup=markup)
 
 
+@dp.message_handler(commands=['search'])
+async def take_start(message: types.Message):
+    DbFunc().check_user(message)
+    search_text = message.text.replace('/search ', '')
+    answer_msg = FindMovies().search_films(search_text)
+    if answer_msg:
+        DbFunc().insert_movies(answer_msg)
+        for text in answer_msg[:10]:
+            inline_declar = types.InlineKeyboardMarkup()
+            inline_declar.add(types.InlineKeyboardButton('🎬 Дивитися', callback_data=f"f_id@{text['id_film']}"))
+            await message.answer_photo(text['poster'], f"<b>{text['name']}</b>", reply_markup=inline_declar)
+    else:
+        await message.answer('Нічого не знайдено')
+
+
 @dp.message_handler(text_startswith=[url_for_search])
 async def echo(message: types.Message):
     DbFunc().check_user(message)
@@ -31,6 +46,7 @@ async def echo(message: types.Message):
 
 @dp.message_handler(text=['🎥 Показати новинки Топ-10'])
 async def take_text(message: types.Message):
+    DbFunc().check_user(message)
     answer_msg = FindMovies().find_newest()
     DbFunc().insert_movies(answer_msg)
     for text in answer_msg[:10]:

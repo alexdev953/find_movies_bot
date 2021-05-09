@@ -128,7 +128,27 @@ class FindMovies:
         # print(newest_list)
         return newest_list
 
-    def make_films_id(self, href):
-        id_film = href.split('/')[3].split('-')[0]
+    def make_films_id(self, href, search=False):
+        if search:
+            id_film = href.split('/')[5].split('-')[0]
+        else:
+            id_film = href.split('/')[3].split('-')[0]
         # print(id_film)
         return id_film
+
+    def search_films(self, name):
+        films_list = []
+        url = 'http://baskino.me/'
+        response = requests.post(url, headers=HEADERS,
+                                 data={'story': name, 'do': 'search', 'subaction': 'search'})
+        soup = BeautifulSoup(response.text, "html.parser")
+        films = soup.find_all('div', class_='postcover')
+        # print(films)
+        if films:
+            for val in films:
+                if val.find('a')['href'].startswith('http://baskino.me/films/'):
+                    films_list.append({'id_film': self.make_films_id(val.find('a')['href'], search=True) ,
+                                       'name': val.find('img')['title'],
+                                       'url': val.find('a')['href'],
+                                       'poster': val.find('img')['src']})
+        return films_list

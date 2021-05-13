@@ -107,7 +107,7 @@ async def send_admin(update, error):
             await bot.send_message(user, message_to_admin)
         if update.message:
             await update.message.answer('Сталася загальна помилка')
-        elif update.callback_query:
+        elif update.query:
             await bot.send_message(update.query.from_user.id, 'Сталася загальна помилка')
 
 if __name__ == '__main__':

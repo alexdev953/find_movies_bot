@@ -6,8 +6,8 @@ from find_movie_bot import FindMovies
 from bot_utils import make_inline_keyboard, markup, keyboard_inline_state, NextStep
 from db_func import DbFunc
 
-
 memmory_storage = MemoryStorage()
+
 # Initialize bot and dispatcher
 bot = Bot(token=bot_token, parse_mode=types.ParseMode.HTML)
 dp = Dispatcher(bot, storage=memmory_storage)
@@ -106,11 +106,9 @@ async def send_admin(update: types.Update, error):
     Take error in bot and send to admin and user
     """
     if not isinstance(error, TimeoutError):
-        list_admin = [379210271]
         name_error = f'{error}'.replace('<', '').replace('>', '')
         message_to_admin = f"""Сталася помилка в боті:\n{name_error}\nПри запиті:\n{update}"""
-        for user in list_admin:
-            await bot.send_message(user, message_to_admin)
+        await bot.send_message(379210271, message_to_admin)
         if update.message:
             await update.message.answer('Сталася загальна помилка')
         elif update.callback_query:

@@ -112,7 +112,7 @@ async def send_admin(update: types.Update, error):
         if update.message:
             await update.message.answer('Сталася загальна помилка')
         elif update.callback_query:
-            await update.callback_query.message.answer('Сталася загальна помилка')
+            await update.callback_query.message.answer(f'Сталася загальна помилка: {error}')
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)

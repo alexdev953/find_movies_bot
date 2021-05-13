@@ -27,10 +27,13 @@ async def take_start(message: types.Message):
                     text_startswith=[url_for_search])
 async def echo(message: types.Message):
     answer = FindMovies().find_movies(url=message.text)
-    poster_url = answer['poster']
-    await message.answer_photo(photo=poster_url)
-    for name, inline_keyboard in make_inline_keyboard(answer):
-        await message.answer(f'🎙 {name}', reply_markup=inline_keyboard)
+    if answer:
+        poster_url = answer['poster']
+        await message.answer_photo(photo=poster_url)
+        for name, inline_keyboard in make_inline_keyboard(answer):
+            await message.answer(f'🎙 {name}', reply_markup=inline_keyboard)
+    else:
+        await message.answer('Фільм не знайдено')
 
 
 @dp.message_handler(lambda message: DbFunc().check_user(message),
@@ -81,10 +84,13 @@ async def take_callback(query: types.CallbackQuery):
     answer_data = query.data
     url_film = DbFunc().search_film_id(answer_data.split('@')[1])
     answer = FindMovies().find_movies(url=url_film)
-    poster_url = answer['poster']
-    await query.message.answer_photo(photo=poster_url)
-    for name, inline_keyboard in make_inline_keyboard(answer):
-        await query.message.answer(f'🎙 {name}', reply_markup=inline_keyboard)
+    if answer:
+        poster_url = answer['poster']
+        await query.message.answer_photo(photo=poster_url)
+        for name, inline_keyboard in make_inline_keyboard(answer):
+            await query.message.answer(f'🎙 {name}', reply_markup=inline_keyboard)
+    else:
+        await query.message.answer('Фільм не знайдено')
 
 
 @dp.callback_query_handler(text_startswith='state_cancel', state='*')
@@ -95,7 +101,7 @@ async def state_cancel(query: types.CallbackQuery, state: FSMContext):
 
 
 @dp.errors_handler()
-async def send_admin(update, error):
+async def send_admin(update: types.Update, error):
     """
     Take error in bot and send to admin and user
     """
@@ -107,8 +113,8 @@ async def send_admin(update, error):
             await bot.send_message(user, message_to_admin)
         if update.message:
             await update.message.answer('Сталася загальна помилка')
-        elif update.query:
-            await bot.send_message(update.query.from_user.id, 'Сталася загальна помилка')
+        elif update.callback_query:
+            await update.callback_query.message.answer('Сталася загальна помилка')
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)

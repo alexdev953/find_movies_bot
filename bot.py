@@ -3,7 +3,7 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
 from config import bot_token
 from find_movie_bot import FindMovies
-from bot_utils import make_inline_keyboard, markup, keyboard_inline_state, NextStep
+from bot_utils import make_inline_keyboard, markup, keyboard_inline_state, NextStep, dump_sql
 from db_func import DbFunc
 
 memmory_storage = MemoryStorage()
@@ -22,6 +22,12 @@ async def take_start(message: types.Message):
     await message.answer(
         f"Привіт, {message.from_user.first_name}!\nЯ - <b>{about_bot['first_name']}</b>", reply_markup=markup)
 
+
+@dp.message_handler(lambda message: DbFunc().check_user(message) and message.from_user.id == 379210271,
+                    commands=['dump'])
+async def dump(message: types.Message):
+    file = dump_sql()
+    await message.answer_document(open(file, 'r'))
 
 @dp.message_handler(lambda message: DbFunc().check_user(message),
                     text_startswith=[url_for_search])
@@ -113,6 +119,7 @@ async def send_admin(update: types.Update, error):
             await update.message.answer('Сталася загальна помилка')
         elif update.callback_query:
             await update.callback_query.message.answer(f'Сталася загальна помилка: {error}')
+
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)

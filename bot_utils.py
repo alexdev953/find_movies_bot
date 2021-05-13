@@ -1,6 +1,6 @@
 from aiogram import types
 from aiogram.dispatcher.filters.state import State, StatesGroup
-
+import os
 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 markup.add('🎥 Показати новинки Топ-10')
 markup.add('🔎 Пошук')
@@ -27,6 +27,12 @@ def make_inline_keyboard(data):
         declar_keys = (types.InlineKeyboardButton(title, url=href) for title, href in tuple(inline_key))
         object_col.append((watch['name'], inline_declar.add(*declar_keys)))
     return object_col
+
+
+def dump_sql():
+    path = '/home/apache/bot.dump.sql'
+    os.system(f'sqlite3 bot.db .dump > {path}')
+    return path
 
 
 

@@ -25,8 +25,11 @@ class FindMovies:
     def find_movies(self, url):
         self.url = url
         self.players_url = self.find_players_url()
-        self.DICT_WITH_MOVIES['watch'] = self.take_translate()
-        return self.DICT_WITH_MOVIES
+        if self.players_url:
+            self.DICT_WITH_MOVIES['watch'] = self.take_translate()
+            return self.DICT_WITH_MOVIES
+        else:
+            return False
 
     def find_players_url(self) -> list:
         players_url = []

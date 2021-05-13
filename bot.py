@@ -27,7 +27,8 @@ async def take_start(message: types.Message):
                     commands=['dump'])
 async def dump(message: types.Message):
     file = dump_sql()
-    await message.answer_document(open(file, 'r'))
+    await message.answer_document(open(file, 'rb'))
+
 
 @dp.message_handler(lambda message: DbFunc().check_user(message),
                     text_startswith=[url_for_search])

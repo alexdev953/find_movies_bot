@@ -1,4 +1,18 @@
 from aiogram import types
+from aiogram.dispatcher.filters.state import State, StatesGroup
+
+markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+markup.add('🎥 Показати новинки Топ-10')
+markup.add('🔎 Пошук')
+
+# Inline Keyboard settings
+keyboard_inline_state = types.InlineKeyboardMarkup(row_width=1)
+keyboard_inline_state.add(types.InlineKeyboardButton('❌ Скасувати', callback_data=f'state_cancel'))
+
+
+class NextStep(StatesGroup):
+    waiting_for_movies_name = State()
+
 
 
 def make_inline_keyboard(data):
@@ -15,6 +29,4 @@ def make_inline_keyboard(data):
     return object_col
 
 
-markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-markup.add('🎥 Показати новинки Топ-10')
-markup.add('🔎 Пошук')
+

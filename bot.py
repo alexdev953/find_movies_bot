@@ -1,10 +1,9 @@
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters.state import State, StatesGroup
 from config import bot_token
 from find_movie_bot import FindMovies
-from bot_utils import make_inline_keyboard, markup
+from bot_utils import make_inline_keyboard, markup, keyboard_inline_state, NextStep
 from db_func import DbFunc
 
 
@@ -14,13 +13,6 @@ bot = Bot(token=bot_token, parse_mode=types.ParseMode.HTML)
 dp = Dispatcher(bot, storage=memmory_storage)
 
 url_for_search = 'http://baskino.me/films/'
-# Inline Keyboard settings
-keyboard_inline_state = types.InlineKeyboardMarkup(row_width=1)
-keyboard_inline_state.add(types.InlineKeyboardButton('❌ Скасувати', callback_data=f'state_cancel'))
-
-
-class NextStep(StatesGroup):
-    waiting_for_movies_name = State()
 
 
 @dp.message_handler(lambda message: DbFunc().check_user(message),

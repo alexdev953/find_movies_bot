@@ -47,7 +47,7 @@ async def take_text(message: types.Message):
 @dp.message_handler(lambda message: DbFunc().check_user(message),
                     text=['🔎 Пошук'], state='*')
 async def search_state(message: types.Message):
-    await message.answer("Введіть назву фільма", reply_markup=keyboard_inline_state)
+    await message.answer("Введіть назву фільма\nРосійською або Англійською", reply_markup=keyboard_inline_state)
     await NextStep.waiting_for_movies_name.set()
 
 

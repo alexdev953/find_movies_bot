@@ -103,7 +103,7 @@ async def send_admin(update, error):
         print(update, error)
         list_admin = [379210271]
         name_error = f'{error}'.replace('<', '').replace('>', '')
-        message_to_admin = f"""Сталася помилка в боті:\n{name_error}\nПри запиті:\n{update}"""
+        message_to_admin = f"""Сталася помилка в боті:\n{name_error}\nПри запиті:\n{update}""".encode(encoding='utf-8')
         for user in list_admin:
             await bot.send_message(user, message_to_admin)
         await update.message.answer('Сталася загальна помилка')

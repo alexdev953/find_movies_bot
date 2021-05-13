@@ -35,7 +35,7 @@ class DbFunc:
                 name = val['name']
                 url = val['url']
                 poster_url = val['poster']
-                sql_check_exist = f"select not exists(select * from films where films_id = {films_id}"
+                sql_check_exist = f"select not exists(select * from films where films_id = {films_id}) as e;"
                 if self.cur.execute(sql_check_exist).fetchone()[0]:
                     self.cur.execute(f"insert into films (films_id, name, url, poster_url) values ({films_id}, '{name}', '{url}', '{poster_url}')")
                     self.conn.commit()

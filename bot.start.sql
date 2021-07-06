@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS "users" (
   "last_uses" DATETIME,
   CONSTRAINT "unique_id" UNIQUE ("id" ASC)
 );
-INSERT INTO users VALUES(6,379210271,'taras_303','Taras','None','2021-05-08 07:39:46','2021-05-13 22:35:08');
+INSERT INTO users VALUES(1,379210271,'taras_303','Taras','None','2021-05-08 07:39:46','2021-05-13 22:35:08');
 CREATE TABLE IF NOT EXISTS "films" (
   "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "films_id" INTEGER NOT NULL,
@@ -32,8 +32,8 @@ CREATE TABLE IF NOT EXISTS "films" (
   CONSTRAINT "check_unique_films" UNIQUE ("films_id" ASC) ON CONFLICT IGNORE,
   CONSTRAINT "check_unique_id" UNIQUE ("id" ASC)
 );
-INSERT INTO films VALUES(201,27583,'Земля кочевников','http://baskino.me/films/dramy/27583-zemlya-kochevnikov.html','http://baskino.me/uploads/images/2021/255/oidm193.jpg','2021-05-08 11:52:58');
+INSERT INTO films VALUES(1,27583,'Земля кочевников','http://baskino.me/films/dramy/27583-zemlya-kochevnikov.html','http://baskino.me/uploads/images/2021/255/oidm193.jpg','2021-05-08 11:52:58');
 DELETE FROM sqlite_sequence;
-INSERT INTO sqlite_sequence VALUES('users',10);
-INSERT INTO sqlite_sequence VALUES('films',676);
+INSERT INTO sqlite_sequence VALUES('users',1);
+INSERT INTO sqlite_sequence VALUES('films',1);
 COMMIT;

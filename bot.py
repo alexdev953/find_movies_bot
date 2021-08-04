@@ -5,6 +5,7 @@ from config import bot_token
 from find_movie_bot import FindMovies
 from bot_utils import make_inline_keyboard, markup, keyboard_inline_state, NextStep, dump_sql
 from db_func import DbFunc
+import asyncio
 
 memmory_storage = MemoryStorage()
 
@@ -37,6 +38,7 @@ async def echo(message: types.Message):
     if answer:
         poster_url = answer['poster']
         await message.answer_photo(photo=poster_url)
+
         for name, inline_keyboard in make_inline_keyboard(answer):
             await message.answer(f'🎙 {name}', reply_markup=inline_keyboard)
     else:
@@ -96,6 +98,7 @@ async def take_callback(query: types.CallbackQuery):
         await query.message.answer_photo(photo=poster_url)
         for name, inline_keyboard in make_inline_keyboard(answer):
             await query.message.answer(f'🎙 {name}', reply_markup=inline_keyboard)
+            await asyncio.sleep(1)
     else:
         await query.message.answer('Фільм не знайдено')
 

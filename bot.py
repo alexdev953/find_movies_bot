@@ -98,7 +98,7 @@ async def take_callback(query: types.CallbackQuery):
         await query.message.answer_photo(photo=poster_url)
         for name, inline_keyboard in make_inline_keyboard(answer):
             await query.message.answer(f'🎙 {name}', reply_markup=inline_keyboard)
-            await asyncio.sleep(1)
+            await asyncio.sleep(0.3)
     else:
         await query.message.answer('Фільм не знайдено')
 

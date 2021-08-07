@@ -59,24 +59,34 @@ async def take_text(message: types.Message):
 
 @dp.message_handler(lambda message: DbFunc().check_user(message),
                     text=['🔎 Пошук'], state='*')
-async def search_state(message: types.Message):
-    await message.answer("Введіть назву фільма\nРосійською або Англійською", reply_markup=keyboard_inline_state)
+async def search_state(message: types.Message, state: FSMContext):
+    send_message = await message.answer("Введіть назву фільма\nРосійською або Англійською",
+                                        reply_markup=keyboard_inline_state)
     await NextStep.waiting_for_movies_name.set()
+    async with state.proxy() as data:
+        data['message'] = {'chat_id': send_message.chat.id, 'message_id': send_message.message_id}
 
 
 @dp.message_handler(lambda message: DbFunc().check_user(message),
                     state=NextStep.waiting_for_movies_name, content_types=types.ContentTypes.TEXT)
 async def check_city(message: types.Message, state: FSMContext):
+    message_info = await state.get_data()
     search_text = message.text
     answer_msg = FindMovies().search_films(search_text)
     if answer_msg:
+        await bot.delete_message(message_info['message']['chat_id'], message_info['message']['message_id'])
         await state.finish()
         for text in answer_msg[:10]:
             inline_declar = types.InlineKeyboardMarkup()
             inline_declar.add(types.InlineKeyboardButton('🎬 Дивитися', callback_data=f"f_id@{text['id_film']}"))
             await message.answer_photo(text['poster'], f"<b>{text['name']}</b>", reply_markup=inline_declar)
     else:
-        await message.answer('Нічого не знайдено\nВведіть назву ще раз', reply_markup=keyboard_inline_state)
+        send_message = await bot.edit_message_text('Нічого не знайдено\nВведіть назву ще раз',
+                                                   chat_id=message_info['message']['chat_id'],
+                                                   message_id=message_info['message']['message_id'],
+                                                   reply_markup=keyboard_inline_state)
+        async with state.proxy() as data:
+            data['message'] = {'chat_id': send_message.chat.id, 'message_id': send_message.message_id}
 
 
 @dp.message_handler(lambda message: DbFunc().check_user(message),

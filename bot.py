@@ -81,10 +81,8 @@ async def check_city(message: types.Message, state: FSMContext):
             inline_declar.add(types.InlineKeyboardButton('🎬 Дивитися', callback_data=f"f_id@{text['id_film']}"))
             await message.answer_photo(text['poster'], f"<b>{text['name']}</b>", reply_markup=inline_declar)
     else:
-        send_message = await bot.edit_message_text('Нічого не знайдено\nВведіть назву ще раз',
-                                                   chat_id=message_info['message']['chat_id'],
-                                                   message_id=message_info['message']['message_id'],
-                                                   reply_markup=keyboard_inline_state)
+        send_message = await message.answer('Нічого не знайдено\nВведіть назву ще раз',
+                                            reply_markup=keyboard_inline_state)
         async with state.proxy() as data:
             data['message'] = {'chat_id': send_message.chat.id, 'message_id': send_message.message_id}
 

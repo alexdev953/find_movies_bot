@@ -1,3 +1,4 @@
+import aiogram.utils.exceptions
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
@@ -97,8 +98,11 @@ async def take_callback(query: types.CallbackQuery):
         poster_url = answer['poster']
         await query.message.answer_photo(photo=poster_url)
         for name, inline_keyboard in make_inline_keyboard(answer):
-            await query.message.answer(f'🎙 {name}', reply_markup=inline_keyboard)
-            await asyncio.sleep(0.3)
+            try:
+                await query.message.answer(f'🎙 {name}', reply_markup=inline_keyboard)
+                await asyncio.sleep(0.3)
+            except aiogram.utils.exceptions.BadRequest:
+                continue
     else:
         await query.message.answer('Фільм не знайдено')
 

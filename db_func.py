@@ -1,6 +1,9 @@
 import sqlite3
 import psycopg2
+import psycopg2.extras
+
 from config import DATABASE, USER, HOST, PASSWORD
+from typing import Union
 
 
 class DbFunc:
@@ -80,3 +83,20 @@ class DBFunc:
             if con is not None:
                 con.close()
 
+    def check_user(self, message):
+        user_cred = message.from_user
+        self.db_connect(f"select * from check_users({user_cred.id}, '{user_cred.username}',"
+                        f" '{user_cred.first_name}', '{user_cred.last_name}')")
+
+    def insert_movies(self, data):
+        if data:
+            for val in data:
+                films_id = val['id_film']
+                name = val['name']
+                url = val['url']
+                poster_url = val['poster']
+                sql_check_exist = f"select not exists(select * from films where films_id = {films_id}) as e;"
+                if self.cur.execute(sql_check_exist).fetchone()[0]:
+                    self.cur.execute(f"insert into films (films_id, name, url, poster_url) values ({films_id}, '{name}', '{url}', '{poster_url}')")
+                    self.conn.commit()
+            self.conn.close()

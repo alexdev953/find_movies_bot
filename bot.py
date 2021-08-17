@@ -5,7 +5,7 @@ from aiogram.dispatcher import FSMContext
 from config import bot_token
 from find_movie_bot import FindMovies
 from bot_utils import make_inline_keyboard, markup, keyboard_inline_state, NextStep, dump_sql
-from db_func import DbFunc
+from db_func import DbFunc, DBFunc
 import asyncio
 
 memmory_storage = MemoryStorage()
@@ -17,7 +17,7 @@ dp = Dispatcher(bot, storage=memmory_storage)
 url_for_search = 'http://baskino.me/films/'
 
 
-@dp.message_handler(lambda message: DbFunc().check_user(message),
+@dp.message_handler(lambda message: DBFunc().check_user(message),
                     commands=['start'])
 async def take_start(message: types.Message):
     about_bot = await bot.get_me()
@@ -25,14 +25,14 @@ async def take_start(message: types.Message):
         f"Привіт, {message.from_user.first_name}!\nЯ - <b>{about_bot['first_name']}</b>", reply_markup=markup)
 
 
-@dp.message_handler(lambda message: DbFunc().check_user(message) and message.from_user.id == 379210271,
+@dp.message_handler(lambda message: DBFunc().check_user(message) and message.from_user.id == 379210271,
                     commands=['dump'])
 async def dump(message: types.Message):
     file = dump_sql()
     await message.answer_document(open(file, 'rb'))
 
 
-@dp.message_handler(lambda message: DbFunc().check_user(message),
+@dp.message_handler(lambda message: DBFunc().check_user(message),
                     text_startswith=[url_for_search])
 async def echo(message: types.Message):
     answer = FindMovies().find_movies(url=message.text)
@@ -46,7 +46,7 @@ async def echo(message: types.Message):
         await message.answer('Фільм не знайдено')
 
 
-@dp.message_handler(lambda message: DbFunc().check_user(message),
+@dp.message_handler(lambda message: DBFunc().check_user(message),
                     text=['🎥 Показати новинки Топ-10'], state='*')
 async def take_text(message: types.Message):
     answer_msg = FindMovies().find_newest()
@@ -57,7 +57,7 @@ async def take_text(message: types.Message):
         # await message.answer(text)
 
 
-@dp.message_handler(lambda message: DbFunc().check_user(message),
+@dp.message_handler(lambda message: DBFunc().check_user(message),
                     text=['🔎 Пошук'], state='*')
 async def search_state(message: types.Message, state: FSMContext):
     send_message = await message.answer("Введіть назву фільма\nРосійською або Англійською",
@@ -67,7 +67,7 @@ async def search_state(message: types.Message, state: FSMContext):
         data['message'] = {'chat_id': send_message.chat.id, 'message_id': send_message.message_id}
 
 
-@dp.message_handler(lambda message: DbFunc().check_user(message),
+@dp.message_handler(lambda message: DBFunc().check_user(message),
                     state=NextStep.waiting_for_movies_name, content_types=types.ContentTypes.TEXT)
 async def check_city(message: types.Message, state: FSMContext):
     message_info = await state.get_data()
@@ -87,7 +87,7 @@ async def check_city(message: types.Message, state: FSMContext):
             data['message'] = {'chat_id': send_message.chat.id, 'message_id': send_message.message_id}
 
 
-@dp.message_handler(lambda message: DbFunc().check_user(message),
+@dp.message_handler(lambda message: DBFunc().check_user(message),
                     content_types=['text'])
 async def take_text(message: types.Message):
     if message.text.startswith('/'):

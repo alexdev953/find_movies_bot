@@ -1,4 +1,6 @@
 import sqlite3
+import psycopg2
+from config import DATABASE, USER, HOST, PASSWORD
 
 
 class DbFunc:
@@ -49,3 +51,32 @@ class DbFunc:
             return info[0]
         else:
             raise Exception('Nothing found')
+
+
+class DBFunc:
+
+    def db_connect(self, sql, values=None, dict_val=True, all_value=True) -> Union[bool, tuple, list, dict]:
+        con = None
+        try:
+            con = psycopg2.connect(database=DATABASE, user=USER, host=HOST,
+                                   password=PASSWORD, port='5432')
+            con.autocommit = True
+            if dict_val:
+                cur = con.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+            elif not dict_val:
+                cur = con.cursor()
+            if values:
+                cur.execute(sql, values)
+            else:
+                cur.execute(sql)
+            output = cur.fetchall() if all_value else cur.fetchone()
+            cur.close()
+            return output
+        except psycopg2.Error as error:
+            # logger.error(f"Помилка в базі: {error}")
+            print(f"Помилка в базі: {error}")
+            return False
+        finally:
+            if con is not None:
+                con.close()
+

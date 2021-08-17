@@ -87,6 +87,7 @@ class DBFunc:
         user_cred = message.from_user
         self.db_connect(f"select * from check_users({user_cred.id}, '{user_cred.username}',"
                         f" '{user_cred.first_name}', '{user_cred.last_name}')")
+        return True
 
     def insert_movies(self, data):
         if data:

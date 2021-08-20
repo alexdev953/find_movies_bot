@@ -5,7 +5,7 @@ from aiogram.dispatcher import FSMContext
 from config import bot_token
 from find_movie_bot import FindMovies
 from bot_utils import make_inline_keyboard, markup, keyboard_inline_state, NextStep, dump_sql
-from db_func import DbFunc, DBFunc
+from db_func import DBFunc
 import asyncio
 
 memmory_storage = MemoryStorage()
@@ -100,7 +100,7 @@ async def take_text(message: types.Message):
 async def take_callback(query: types.CallbackQuery):
     await bot.answer_callback_query(query.id, '🔭 Шукаю фільм')
     answer_data = query.data
-    url_film = DbFunc().search_film_id(answer_data.split('@')[1])
+    url_film = DBFunc().search_film_id(answer_data.split('@')[1])
     answer = FindMovies().find_movies(url=url_film)
     if answer:
         poster_url = answer['poster']

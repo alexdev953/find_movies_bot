@@ -102,7 +102,7 @@ class DBFunc:
     def search_film_id(self, id_film):
         info = self.db_connect(f'select url from films where films_id = {id_film}', all_value=False)
         if info:
-            return info
+            return dict(info)
         else:
             raise Exception('Nothing found')
 

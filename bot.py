@@ -100,7 +100,7 @@ async def take_text(message: types.Message):
 async def take_callback(query: types.CallbackQuery):
     await bot.answer_callback_query(query.id, '🔭 Шукаю фільм')
     answer_data = query.data
-    url_film = DBFunc().search_film_id(answer_data.split('@')[1])
+    url_film = DBFunc().search_film_id(answer_data.split('@')[1])['url']
     answer = FindMovies().find_movies(url=url_film)
     if answer:
         poster_url = answer['poster']

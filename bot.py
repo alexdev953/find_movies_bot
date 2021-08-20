@@ -58,6 +58,16 @@ async def take_text(message: types.Message):
 
 
 @dp.message_handler(lambda message: DBFunc().check_user(message),
+                    text=['Випадковий фільм'], state='*')
+async def take_text(message: types.Message):
+    answer_msg = FindMovies().get_random_movie()
+    for text in answer_msg[:10]:
+        inline_declar = types.InlineKeyboardMarkup()
+        inline_declar.add(types.InlineKeyboardButton('🎬 Дивитися', callback_data=f"f_id@{text['id_film']}"))
+        await message.answer_photo(text['poster'], f"<b>{text['name']}</b>", reply_markup=inline_declar)
+
+
+@dp.message_handler(lambda message: DBFunc().check_user(message),
                     text=['🔎 Пошук'], state='*')
 async def search_state(message: types.Message, state: FSMContext):
     send_message = await message.answer("Введіть назву фільма\nРосійською або Англійською",

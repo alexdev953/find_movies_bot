@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import re
 import logging
+from random import randint
 from config import HEADERS
 from db_func import DBFunc
 logging.basicConfig(level=logging.INFO)
@@ -156,3 +157,26 @@ class FindMovies:
                                        'poster': val.find('img')['src']})
         DBFunc().insert_movies(films_list)
         return films_list
+
+    @staticmethod
+    def random_movie():
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:77.0) Gecko/20100101 Firefox/77.0',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'ru-RU;q=0.9,ru;',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+            'Cache-Control': 'max-age=0',
+        }
+        response = requests.get('https://www.imdb.com/chart/top', headers=headers)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        tbody = soup.find_all('td', class_='titleColumn')
+        if tbody:
+            film_list = [val.find('a').text for val in tbody]
+            length_films = len(film_list)
+            return film_list[randint(0, length_films)]
+        else:
+            raise Exception('Nothing found')
+
+    def get_random_movie(self):
+        return self.search_films(self.random_movie())

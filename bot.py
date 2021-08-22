@@ -58,13 +58,16 @@ async def take_text(message: types.Message):
 
 
 @dp.message_handler(lambda message: DBFunc().check_user(message),
-                    text=['Випадковий фільм'], state='*')
+                    text=['🎲 Випадковий фільм'], state='*')
 async def take_text(message: types.Message):
-    answer_msg = FindMovies().get_random_movie()
-    for text in answer_msg[:10]:
-        inline_declar = types.InlineKeyboardMarkup()
-        inline_declar.add(types.InlineKeyboardButton('🎬 Дивитися', callback_data=f"f_id@{text['id_film']}"))
-        await message.answer_photo(text['poster'], f"<b>{text['name']}</b>", reply_markup=inline_declar)
+    random_movie = FindMovies().get_random_bs()
+    answer = FindMovies().find_movies(url=random_movie)
+    if answer:
+        poster_url = answer['poster']
+        await message.answer_photo(photo=poster_url)
+
+        for name, inline_keyboard in make_inline_keyboard(answer):
+            await message.answer(f'🎙 {name}', reply_markup=inline_keyboard)
 
 
 @dp.message_handler(lambda message: DBFunc().check_user(message),

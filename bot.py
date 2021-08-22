@@ -61,14 +61,16 @@ async def take_text(message: types.Message):
                     text=['🎲 Випадковий фільм'], state='*')
 async def take_text(message: types.Message):
     random_movie = FindMovies().get_random_bs()
-    answer = FindMovies().find_movies(url=random_movie)
-    if answer:
+    try:
+        answer = FindMovies().find_movies(url=random_movie)
         poster_url = answer['poster']
         await message.answer_photo(photo=poster_url)
 
         for name, inline_keyboard in make_inline_keyboard(answer):
             await message.answer(f'🎙 {name}', reply_markup=inline_keyboard)
-
+    except AttributeError:
+        print(answer)
+        await message.answer('Спробуйте ще раз')
 
 @dp.message_handler(lambda message: DBFunc().check_user(message),
                     text=['🔎 Пошук'], state='*')

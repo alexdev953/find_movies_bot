@@ -29,7 +29,7 @@ async def take_start(message: types.Message):
                     commands=['count'])
 async def dump(message: types.Message):
     answer_count = DBFunc().count_users()
-    await message.answer(f'Реальних користувачів: {answer_count}')
+    await message.answer(f'Реальних користувачів: {answer_count["count"]}')
 
 
 @dp.message_handler(lambda message: DBFunc().check_user(message),

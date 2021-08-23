@@ -144,13 +144,11 @@ class FindMovies:
     def search_films(self, name):
         films_list = []
         response = requests.post(self.base_url, headers=HEADERS,
-                                 data={'story': name, 'do': 'search', 'subaction': 'search','full_search': 1,
-                                       'catlist[]': 1})
+                                 data={'story': name, 'do': 'search', 'subaction': 'search', 'search_start': 1})
         soup = BeautifulSoup(response.text, "html.parser")
         films = soup.find_all('div', class_='postcover')
-        # print(films)
         if films:
-            films_list.extend(self.search_film_in_page(films, films_list))
+            self.search_film_in_page(films, films_list)
         return films_list
 
     def search_film_in_page(self, data, films_list):

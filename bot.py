@@ -54,6 +54,7 @@ async def take_text(message: types.Message):
         inline_declar = types.InlineKeyboardMarkup()
         inline_declar.add(types.InlineKeyboardButton('🎬 Дивитися', callback_data=f"f_id@{text['id_film']}"))
         await message.answer_photo(text['poster'], f"<b>{text['name']}</b>", reply_markup=inline_declar)
+        await asyncio.sleep(0.3)
         # await message.answer(text)
 
 

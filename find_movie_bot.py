@@ -151,12 +151,12 @@ class FindMovies:
         navigation = soup.find('div', class_='navigation')
         if films:
             films_list.extend(films)
-            print('first page', films_list)
+            # print('first page', films_list)
             if navigation:
                 last_page = navigation.find_all('a')[-2].text
                 self.search_film_another_page(data, last_page, films_list)
         parsed_films = self.search_film_in_page(films_list)
-        print(parsed_films)
+        # print(parsed_films)
         return parsed_films
 
     def search_film_another_page(self, data, last_page, films_list):
@@ -168,7 +168,7 @@ class FindMovies:
             soup = BeautifulSoup(response.text, "html.parser")
             films = soup.find_all('div', class_='postcover')
             films_list.extend(films)
-            print(f'page number: {page}\nfilms list: {films_list}')
+            # print(f'page number: {page}\nfilms list: {films_list}')
 
 
     def search_film_in_page(self, data):

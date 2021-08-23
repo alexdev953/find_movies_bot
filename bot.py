@@ -47,10 +47,10 @@ async def echo(message: types.Message):
 
 
 @dp.message_handler(lambda message: DBFunc().check_user(message),
-                    text=['🎥 Показати новинки Топ-10'], state='*')
+                    text=['🎥 Показати новинки Топ-15'], state='*')
 async def take_text(message: types.Message):
     answer_msg = FindMovies().find_newest()
-    for text in answer_msg[:10]:
+    for text in answer_msg[:15]:
         inline_declar = types.InlineKeyboardMarkup()
         inline_declar.add(types.InlineKeyboardButton('🎬 Дивитися', callback_data=f"f_id@{text['id_film']}"))
         await message.answer_photo(text['poster'], f"<b>{text['name']}</b>", reply_markup=inline_declar)
@@ -91,10 +91,11 @@ async def check_city(message: types.Message, state: FSMContext):
     if answer_msg:
         await bot.delete_message(message_info['message']['chat_id'], message_info['message']['message_id'])
         await state.finish()
-        for text in answer_msg[:10]:
+        for text in answer_msg:
             inline_declar = types.InlineKeyboardMarkup()
             inline_declar.add(types.InlineKeyboardButton('🎬 Дивитися', callback_data=f"f_id@{text['id_film']}"))
             await message.answer_photo(text['poster'], f"<b>{text['name']}</b>", reply_markup=inline_declar)
+            await asyncio.sleep(0.5)
     else:
         send_message = await message.answer('Нічого не знайдено\nВведіть назву ще раз',
                                             reply_markup=keyboard_inline_state)

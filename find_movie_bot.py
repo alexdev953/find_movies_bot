@@ -143,23 +143,44 @@ class FindMovies:
 
     def search_films(self, name):
         films_list = []
+        data = {'story': name, 'do': 'search', 'subaction': 'search', 'search_start': 1}
         response = requests.post(self.base_url, headers=HEADERS,
-                                 data={'story': name, 'do': 'search', 'subaction': 'search', 'search_start': 1})
+                                 data=data)
         soup = BeautifulSoup(response.text, "html.parser")
         films = soup.find_all('div', class_='postcover')
+        navigation = soup.find('div', class_='navigation')
         if films:
-            self.search_film_in_page(films, films_list)
-        return films_list
+            films_list.extend(films)
+            print('first page', films_list)
+            if navigation:
+                last_page = navigation.find_all('a')[-2].text
+                self.search_film_another_page(data, last_page, films_list)
+        parsed_films = self.search_film_in_page(films_list)
+        print(parsed_films)
+        return parsed_films
 
-    def search_film_in_page(self, data, films_list):
+    def search_film_another_page(self, data, last_page, films_list):
+        url = 'http://baskino.me/'
+        for page in range(2, int(last_page)):
+            data['search_start'] = page
+            response = requests.post(url, headers=HEADERS,
+                                     data=data)
+            soup = BeautifulSoup(response.text, "html.parser")
+            films = soup.find_all('div', class_='postcover')
+            films_list.extend(films)
+            print(f'page number: {page}\nfilms list: {films_list}')
+
+
+    def search_film_in_page(self, data):
+        parsed_films = []
         for val in data:
             if val.find('a')['href'].startswith(f'{self.base_url}films/'):
-                films_list.append({'id_film': self.make_films_id(val.find('a')['href'], search=True),
+                parsed_films.append({'id_film': self.make_films_id(val.find('a')['href'], search=True),
                                    'name': val.find('img')['title'],
                                    'url': val.find('a')['href'],
                                    'poster': val.find('img')['src']})
-        DBFunc().insert_movies(films_list)
-        return films_list
+        DBFunc().insert_movies(parsed_films)
+        return parsed_films
 
     def get_random_bs(self):
         response = requests.get('http://baskino.me/top/', headers=HEADERS)

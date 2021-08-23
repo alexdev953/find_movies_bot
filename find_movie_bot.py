@@ -16,6 +16,7 @@ class FindMovies:
         self.player = None
         self.players_url = None
         self.script = None
+        self.base_url = 'http://baskino.me/'
 
         self.DICT_WITH_MOVIES = {
             "poster": "",
@@ -142,19 +143,23 @@ class FindMovies:
 
     def search_films(self, name):
         films_list = []
-        url = 'http://baskino.me/'
-        response = requests.post(url, headers=HEADERS,
-                                 data={'story': name, 'do': 'search', 'subaction': 'search'})
+        response = requests.post(self.base_url, headers=HEADERS,
+                                 data={'story': name, 'do': 'search', 'subaction': 'search','full_search': 1,
+                                       'catlist[]': 1})
         soup = BeautifulSoup(response.text, "html.parser")
         films = soup.find_all('div', class_='postcover')
         # print(films)
         if films:
-            for val in films:
-                if val.find('a')['href'].startswith(f'{url}films/'):
-                    films_list.append({'id_film': self.make_films_id(val.find('a')['href'], search=True),
-                                       'name': val.find('img')['title'],
-                                       'url': val.find('a')['href'],
-                                       'poster': val.find('img')['src']})
+            films_list.extend(self.search_film_in_page(films, films_list))
+        return films_list
+
+    def search_film_in_page(self, data, films_list):
+        for val in data:
+            if val.find('a')['href'].startswith(f'{self.base_url}films/'):
+                films_list.append({'id_film': self.make_films_id(val.find('a')['href'], search=True),
+                                   'name': val.find('img')['title'],
+                                   'url': val.find('a')['href'],
+                                   'poster': val.find('img')['src']})
         DBFunc().insert_movies(films_list)
         return films_list
 

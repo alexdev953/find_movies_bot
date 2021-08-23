@@ -26,10 +26,10 @@ async def take_start(message: types.Message):
 
 
 @dp.message_handler(lambda message: DBFunc().check_user(message) and message.from_user.id == 379210271,
-                    commands=['dump'])
+                    commands=['count'])
 async def dump(message: types.Message):
-    file = dump_sql()
-    await message.answer_document(open(file, 'rb'))
+    answer_count = DBFunc().count_users()
+    await message.answer(f'Реальних користувачів: {answer_count}')
 
 
 @dp.message_handler(lambda message: DBFunc().check_user(message),

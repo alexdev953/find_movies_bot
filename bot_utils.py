@@ -31,10 +31,3 @@ def make_inline_keyboard(data):
     return object_col
 
 
-def dump_sql():
-    path = '/home/apache/bot.dump.sql'
-    os.system(f'sqlite3 bot.db .dump > {path}')
-    return path
-
-
-

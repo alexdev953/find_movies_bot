@@ -4,7 +4,7 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
 from config import bot_token
 from find_movie_bot import FindMovies
-from bot_utils import make_inline_keyboard, markup, keyboard_inline_state, NextStep, dump_sql
+from bot_utils import make_inline_keyboard, markup, keyboard_inline_state, NextStep
 from db_func import DBFunc
 import asyncio
 

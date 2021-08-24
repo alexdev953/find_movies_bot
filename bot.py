@@ -8,11 +8,11 @@ from bot_utils import make_inline_keyboard, markup, keyboard_inline_state, NextS
 from db_func import DBFunc
 import asyncio
 
-memmory_storage = MemoryStorage()
+memory_storage = MemoryStorage()
 
 # Initialize bot and dispatcher
 bot = Bot(token=bot_token, parse_mode=types.ParseMode.HTML)
-dp = Dispatcher(bot, storage=memmory_storage)
+dp = Dispatcher(bot, storage=memory_storage)
 
 url_for_search = 'http://baskino.me/films/'
 
@@ -72,6 +72,7 @@ async def take_text(message: types.Message):
     except AttributeError:
         print(answer)
         await message.answer('Спробуйте ще раз')
+
 
 @dp.message_handler(lambda message: DBFunc().check_user(message),
                     text=['🔎 Пошук'], state='*')

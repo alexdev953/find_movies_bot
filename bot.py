@@ -70,7 +70,6 @@ async def take_text(message: types.Message):
         for name, inline_keyboard in make_inline_keyboard(answer):
             await message.answer(f'🎙 {name}', reply_markup=inline_keyboard)
     except AttributeError:
-        print(answer)
         await message.answer('Спробуйте ще раз')
 
 

@@ -70,7 +70,6 @@ async def take_text(message: types.Message):
             try:
                 await message.answer(f'🎙 {name}', reply_markup=inline_keyboard)
             except aiogram.utils.exceptions.BadRequest:
-                print(inline_keyboard)
                 continue
     except AttributeError:
         await message.answer('Спробуйте ще раз')

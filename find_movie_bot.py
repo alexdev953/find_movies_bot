@@ -39,9 +39,8 @@ class FindMovies:
         soup = BeautifulSoup(response.text, "html.parser")
         player_web_urls = soup.find_all('iframe')
         for player_url in player_web_urls:
-            if player_url['src'].find('voidboost') != -1 or player_url['src'].find(
-                    'delivembed') != -1:
-                players_url.append(player_url['src'])
+            if 'voidboost' in player_url.get('src') or 'delivembed' in player_url.get('src'):
+                players_url.append(player_url.get('src'))
         self.find_poster_url(soup)
         return players_url
 
@@ -143,7 +142,6 @@ class FindMovies:
             id_film = href.split('/')[5].split('-')[0]
         else:
             id_film = href.split('/')[3].split('-')[0]
-        # print(id_film)
         return id_film
 
     def search_films(self, name):

@@ -50,12 +50,14 @@ async def echo(message: types.Message):
                     text=['🎥 Показати новинки Топ-15'], state='*')
 async def take_text(message: types.Message):
     answer_msg = FindMovies().find_newest()
-    for text in answer_msg[:15]:
-        inline_declar = types.InlineKeyboardMarkup()
-        inline_declar.add(types.InlineKeyboardButton('🎬 Дивитися', callback_data=f"f_id@{text['id_film']}"))
-        await message.answer_photo(text['poster'], f"<b>{text['name']}</b>", reply_markup=inline_declar)
-        await asyncio.sleep(0.3)
-        # await message.answer(text)
+    if not answer_msg.get('error'):
+        for text in answer_msg[:15]:
+            inline_declar = types.InlineKeyboardMarkup()
+            inline_declar.add(types.InlineKeyboardButton('🎬 Дивитися', callback_data=f"f_id@{text['id_film']}"))
+            await message.answer_photo(text['poster'], f"<b>{text['name']}</b>", reply_markup=inline_declar)
+            await asyncio.sleep(0.3)
+    else:
+        await message.answer(answer_msg.get('error'))
 
 
 @dp.message_handler(lambda message: DBFunc().check_user(message),

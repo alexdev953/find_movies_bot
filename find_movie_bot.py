@@ -122,16 +122,21 @@ class FindMovies:
         newest_list = []
         url = 'http://baskino.me'
         response = requests.get(url, headers=HEADERS)
-        soup = BeautifulSoup(response.text, "html.parser")
-        find_newest = soup.find('div', class_='carousel-box').find_all('a')
-        for val in find_newest:
-            if not val['href'].startswith('#'):
-                newest_list.append({'id_film': self.make_films_id(val['href']),
-                                    'name': val.find('img')['title'],
-                                    'url': f"{url}{val['href']}",
-                                    'poster': val.find('img')['src']})
-        DBFunc().insert_movies(newest_list)
-        return newest_list
+        if response:
+            print(response)
+            soup = BeautifulSoup(response.text, "html.parser")
+            find_newest = soup.find('div', class_='carousel-box').find_all('a')
+            for val in find_newest:
+                if not val['href'].startswith('#'):
+                    newest_list.append({'id_film': self.make_films_id(val['href']),
+                                        'name': val.find('img')['title'],
+                                        'url': f"{url}{val['href']}",
+                                        'poster': val.find('img')['src']})
+            DBFunc().insert_movies(newest_list)
+            return {'error': False, 'movies': newest_list}
+        else:
+            return {'error': 'Сталася помилка при з\'єднанні з фільмовим сервером, спробуйте пізніше',
+                    'movies': newest_list}
 
     def make_films_id(self, href, search=False):
         if search:

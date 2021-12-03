@@ -122,7 +122,6 @@ class FindMovies:
         url = 'http://baskino.me'
         response = requests.get(url, headers=HEADERS)
         if response:
-            print(response)
             soup = BeautifulSoup(response.text, "html.parser")
             find_newest = soup.find('div', class_='carousel-box').find_all('a')
             for val in find_newest:

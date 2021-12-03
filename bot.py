@@ -51,7 +51,7 @@ async def echo(message: types.Message):
 async def take_text(message: types.Message):
     answer_msg = FindMovies().find_newest()
     if not answer_msg.get('error'):
-        for text in answer_msg[:15]:
+        for text in answer_msg.get('movies')[:15]:
             inline_declar = types.InlineKeyboardMarkup()
             inline_declar.add(types.InlineKeyboardButton('🎬 Дивитися', callback_data=f"f_id@{text['id_film']}"))
             await message.answer_photo(text['poster'], f"<b>{text['name']}</b>", reply_markup=inline_declar)

@@ -172,7 +172,6 @@ class FindMovies:
             films_list.extend(films)
             # print(f'page number: {page}\nfilms list: {films_list}')
 
-
     def search_film_in_page(self, data):
         parsed_films = []
         for val in data:
@@ -185,16 +184,19 @@ class FindMovies:
         return parsed_films
 
     def get_random_bs(self):
+        film_list = []
         response = requests.get('http://baskino.me/top/', headers=HEADERS)
         soup = BeautifulSoup(response.text, "html.parser")
         tbody = soup.find('ul', class_='content_list_top')
         tbody_top_raw = tbody.find_all('a')
-        movie_ans = self.format_top_movies(tbody_top_raw, random=randint(0, len(tbody_top_raw)))
+        for val in tbody_top_raw:
+            if '/films/' in val.get('href'):
+                film_list.append(val.get('href'))
+        movie_ans = self.format_top_movies(film_list, random=randint(0, len(tbody_top_raw)))
         return movie_ans
 
     @staticmethod
     def format_top_movies(data, random):
-        movie = data[random]['href']
-        return movie
+        return data[random]
 
 

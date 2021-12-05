@@ -7,6 +7,10 @@ from find_movie_bot import FindMovies
 from bot_utils import make_inline_keyboard, markup, keyboard_inline_state, NextStep
 from db_func import DBFunc
 import asyncio
+import logging
+
+logger = logging.getLogger('handler')
+loop = asyncio.get_event_loop()
 
 memory_storage = MemoryStorage()
 
@@ -63,9 +67,9 @@ async def take_text(message: types.Message):
 @dp.message_handler(lambda message: DBFunc().check_user(message),
                     text=['🎲 Випадковий фільм'], state='*')
 async def take_text(message: types.Message):
-    random_movie = FindMovies().get_random_bs()
+    random_movie = await loop.run_in_executor(None, FindMovies().get_random_bs)
     try:
-        answer = FindMovies().find_movies(url=random_movie)
+        answer = await loop.run_in_executor(None, FindMovies().find_movies, random_movie)
         poster_url = answer['poster']
         await message.answer_photo(photo=poster_url)
         for name, inline_keyboard in make_inline_keyboard(answer):
@@ -75,6 +79,7 @@ async def take_text(message: types.Message):
                 continue
     except AttributeError:
         await message.answer('Спробуйте ще раз')
+
 
 @dp.message_handler(lambda message: DBFunc().check_user(message),
                     text=['🔎 Пошук'], state='*')

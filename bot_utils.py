@@ -1,6 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher.filters.state import State, StatesGroup
-import os
+
+
 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 markup.add('🔎 Пошук', '🎲 Випадковий фільм')
 markup.add('🎥 Показати новинки Топ-15')

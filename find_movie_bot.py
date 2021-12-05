@@ -1,12 +1,9 @@
 from bs4 import BeautifulSoup
 import requests
 import re
-import logging
 from random import randint
 from config import HEADERS
 from db_func import DBFunc
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger('Find_movie_bot')
 
 
 class FindMovies:

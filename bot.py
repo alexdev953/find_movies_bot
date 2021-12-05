@@ -1,22 +1,22 @@
 import aiogram.utils.exceptions
-from aiogram import Bot, Dispatcher, executor, types
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from aiogram import executor, types
 from aiogram.dispatcher import FSMContext
-from config import bot_token
 from find_movie_bot import FindMovies
 from bot_utils import make_inline_keyboard, markup, keyboard_inline_state, NextStep
 from db_func import DBFunc
 import asyncio
-import logging
+import app_logger
 
-logger = logging.getLogger('handler')
+from bot_init import dp, bot
+
+logger = app_logger.get_logger('handler')
+
+
 loop = asyncio.get_event_loop()
 
-memory_storage = MemoryStorage()
 
-# Initialize bot and dispatcher
-bot = Bot(token=bot_token, parse_mode=types.ParseMode.HTML)
-dp = Dispatcher(bot, storage=memory_storage)
+
+
 
 url_for_search = 'http://baskino.me/films/'
 
